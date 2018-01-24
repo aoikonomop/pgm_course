@@ -38,6 +38,11 @@ indxB = AssignmentToIndex(assignments(:, mapB), B.card);
 % YOUR CODE HERE
 % Correctly populate the factor values of B
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    
+for i=1:B.card
+    I = find(indxB == i);
+    assignments = IndexToAssignment(I, A.card);
+    marginal = sum(GetValueOfAssignment(A, assignments));
+    B = SetValueOfAssignment(B, IndexToAssignment(i, B.card), marginal);
+end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 end

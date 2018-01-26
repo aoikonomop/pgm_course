@@ -26,8 +26,15 @@ end
 % M should be a factor
 % Remember to renormalize the entries of M!
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-M = struct('var', [], 'card', [], 'val', []); % Returns empty factor. Change this.
+all_variables = [];
+for i = 1:length(F)
+    all_variables = union(all_variables, F(i).var);
+end
+marg_variables = setdiff(all_variables, V);
+Joint = ComputeJointDistribution(F);
+Joint = ObserveEvidence(Joint, E);
+Joint.val = Joint.val / sum(Joint.val);
+M = FactorMarginalization(Joint, marg_variables);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 end

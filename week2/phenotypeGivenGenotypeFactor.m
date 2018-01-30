@@ -35,9 +35,28 @@ phenotypeFactor = struct('var', [], 'card', [], 'val', []);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  
 
 % Fill in phenotypeFactor.var.  This should be a 1-D row vector.
+phenotypeFactor.var = [phenotypeVar, genotypeVar];
 % Fill in phenotypeFactor.card.  This should be a 1-D row vector.
+phenotypeFactor.card = [2, length(alphaList)];
 
 phenotypeFactor.val = zeros(1, prod(phenotypeFactor.card));
 % Replace the zeros in phentoypeFactor.val with the correct values.
+assignments = IndexToAssignment(1:prod(phenotypeFactor.card), ...
+    phenotypeFactor.card);
+
+[unique_rows, ~, J] = unique(assignments(:, 2:end), 'rows');
+if size(unique_rows, 1) ~= length(alphaList)
+    error('Insufficient alphas for available unique combinations of alleles');
+end
+
+for i = 1:size(unique_rows, 1)
+    temp_assignments = assignments(J == i, :);
+    phenotypeFactor = SetValueOfAssignment(phenotypeFactor, ...
+        temp_assignments, [alphaList(i), 1 - alphaList(i)]);
+end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+

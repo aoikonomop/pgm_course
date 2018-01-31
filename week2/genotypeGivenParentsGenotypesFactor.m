@@ -64,8 +64,23 @@ genotypeFactor.card = ones(1, 3) * size(genotypesToAlleles, 1);
 genotypeFactor.val = zeros(1, prod(genotypeFactor.card));
 % Replace the zeros in genotypeFactor.val with the correct values.
 assignments = IndexToAssignment(1:prod(genotypeFactor.card), ...
-    genotypeFactor.card)
-
+    genotypeFactor.card);
+ 
+for i = 1:size(assignments, 1)
+    child = genotypesToAlleles(assignments(i, 1), :);
+    parent1 = genotypesToAlleles(assignments(i, 2), :);
+    parent2 = genotypesToAlleles(assignments(i, 3), :);
+    
+    all_poss = [];
+    for j = 1:length(parent1)
+        for k = 1:length(parent2)
+            all_poss = [all_poss; parent1(j) parent2(k)];
+        end
+    end
+    I = ismember(sort(all_poss, 2), sort(child), 'rows');
+    p = sum(I) / length(I);
+    genotypeFactor = SetValueOfAssignment(genotypeFactor, assignments(i, :), p);
+end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

@@ -52,7 +52,7 @@ numPeople = length(pedigree.names);
 
 % Initialize factors
 % The number of factors is twice the number of people because there is a 
-% factor for each person's genotype and a separate factor for each person's 
+% factor for each person's genotype andnum a separate factor for each person's 
 % phenotype.  Note that the order of the factors in the list does not
 % matter.
 factorList(2*numPeople) = struct('var', [], 'card', [], 'val', []);
@@ -65,5 +65,16 @@ numAlleles = length(alleleFreqs); % Number of alleles
 % 1 - numPeople: genotype variables
 % numPeople+1 - 2*numPeople: phenotype variables
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
-
+for i = 1:numPeople
+    if pedigree.parents(i, 1) == 0
+        factorList(i) = genotypeGivenAlleleFreqsFactor(alleleFreqs, i);
+    else
+        factorList(i) = genotypeGivenParentsGenotypesFactor(numAlleles, i, pedigree.parents(i, 1), pedigree.parents(i,2));
+    end
+end
+for i = 1:numPeople
+    factorList(i + numPeople) = phenotypeGivenGenotypeFactor(alphaList, i, i + numPeople);
+end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  
+
+

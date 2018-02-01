@@ -82,4 +82,31 @@ numAlleles = length(alleleFreqs); % Number of alleles
 % 2*numPeople+1 - 3*numPeople: phenotype variables
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  
 
+parent = 0;
+for k = 1:2
+    parent = parent + 1;
+    for i = ((k-1)*numPeople + 1):(k * numPeople)
+        if pedigree.parents(i - (k-1)*numPeople, 1) == 0
+            factorList(i).var = i;
+            factorList(i).card = numAlleles;
+            factorList(i).val = alleleFreqs';
+        else
+            factorList(i).var = [i pedigree.parents(i - (k-1)*numPeople, parent), ...
+                pedigree.parents(i - (k-1)*numPeople, parent) + numPeople];
+            factorList(i).card = ones(1, numAlleles) * numAlleles;
+
+            assignments = IndexToAssignment(1:prod(factorList(i).card), ...
+                factorList(i).card);
+
+            for j = 1:size(assignments, 1)
+                factorList(i) = SetValueOfAssignment(factorList(i), assignments(j, :), ...
+                    sum(ismember(assignments(j, 2:end), assignments(j, 1))) / 2); 
+            end
+        end
+    end
+end
+for i = 2*numPeople+1:3*numPeople
+    factorList(i) = phenotypeGivenCopiesFactor(alphaList, numAlleles, ...
+        i - 2*numPeople, i - numPeople, i);
+end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  

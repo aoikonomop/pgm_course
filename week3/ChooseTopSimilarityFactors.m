@@ -23,7 +23,12 @@ if (length(allFactors) <= F)
 end
 
 % Your code here:
-factors = allFactors; %%% REMOVE THIS LINE
+max_values = [];
+for i=1:length(allFactors)
+    max_values = [max_values;max(allFactors(i).val)];
+end
+[~, I] = sort(max_values, 'descend');
+factors = allFactors(I(1:F));
 
 end
 

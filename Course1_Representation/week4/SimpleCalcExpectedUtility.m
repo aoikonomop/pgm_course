@@ -21,8 +21,23 @@ function EU = SimpleCalcExpectedUtility(I)
   % YOUR CODE HERE
   %
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
- 
+  all_variables = [];
+  for i = 1:length(F) - 1
+      all_variables = [all_variables F(i).var];
+  end
+  all_variables = unique([all_variables U.var]);
   
+  elim_vars = setdiff(all_variables, I.DecisionFactors.var);
+  Fnew = VariableElimination([I.RandomFactors, U], elim_vars);
+  
+  EUF = struct('var', [], 'card', [], 'val', []);
+  for i = 1:length(Fnew)
+      EUF = FactorProduct(EUF, Fnew(i));
+  end
+  
+  % Bring variables in the correct order
+  temp = FactorProduct(EUF, I.DecisionFactors);
+  
+  EU = sum(temp.val);
   
 end

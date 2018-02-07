@@ -30,7 +30,7 @@ end
 % allEU => [7.3000, 3.8000]
 
 % Get EUF...
-euf = CalculateExpectedUtilityFactor(I1);
+euf = CalculateExpectedUtilityFactor(I1)
 % PrintFactor(euf) =>
 % 2	
 % 1	7.300000

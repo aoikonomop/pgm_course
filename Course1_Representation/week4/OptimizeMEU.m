@@ -29,25 +29,24 @@ function [MEU OptimalDecisionRule] = OptimizeMEU( I )
   OptimalDecisionRule = struct('var', [], 'card', [], 'val', []);
   OptimalDecisionRule.var = EUF.var;
   OptimalDecisionRule.card = EUF.card;
-  
   assignments = IndexToAssignment(1:prod(D.card), D.card);
   OptimalDecisionRule = SetValueOfAssignment(OptimalDecisionRule, assignments,...
       zeros(prod(D.card), 1));
   
-  if size(assignments, 2) > 1
-      unique_partial = unique(assignments(:, end - 1), 'rows');
-      for i = 1:size(unique_partial, 1)
-          idx2 = ismember(assignments(:, end - 1), unique_partial(i, :));
-          temp_assignments = assignments(idx2, :);
-          indexes = AssignmentToIndex(temp_assignments, EUF.card(i));
-          [~, max_index] = max(EUF.val(indexes));
-          OptimalDecisionRule = SetValueOfAssignment(OptimalDecisionRule, ...
-              IndexToAssignment(temp_assignments(max_index, :), EUF.card(i)), 1);
-      end
+  Dparents = D.var(2:end);
+  
+  if isempty(Dparents)
+      [~, idx] = max(EUF.val);
+      OptimalDecisionRule.val(idx) = 1.0;
   else
-      [~, max_index] = max(EUF.val);
-      OptimalDecisionRule = SetValueOfAssignment(OptimalDecisionRule, ...
-          IndexToAssignment(assignments(max_index, :), EUF.card(1)), 1);
+      temp_assignments = IndexToAssignment(1:prod(D.card(2:end)), D.card(2:end));
+      for i = 1:size(temp_assignments, 1)
+          selected_assignments = assignments(ismember(assignments(:, 1:end-1), temp_assignments(i, :)), :);
+          values = GetValueOfAssignment(EUF, selected_assignments);
+          [~, idx] = max(values);
+          OptimalDecisionRule = SetValueOfAssignment(OptimalDecisionRule, selected_assignments(idx, :),...
+              1.0);
+      end
   end
   
   MEU = sum(EUF.val .* OptimalDecisionRule.val);

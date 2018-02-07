@@ -34,5 +34,4 @@ function EUF = CalculateExpectedUtilityFactor( I )
   for i = 1:length(Fnew)
       EUF = FactorProduct(EUF, Fnew(i));
   end
-    
 end  

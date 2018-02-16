@@ -39,14 +39,19 @@ MESSAGES = repmat(struct('var', [], 'card', [], 'val', []), N, N);
 i = 1;
 init_message = struct('var', [], 'card', [], 'val', []);
 old_i = 0;
+temp = [];
 while i ~= 0
-    [i, j] = GetNextCliques(P, MESSAGES)
-    if i ~= old_i
-        old_message = init_message;
+    [i, j] = GetNextCliques(P, MESSAGES);
+    if i ~= 0
+        if i ~= old_i
+            old_message = init_message;
+        end
+        message = FactorProduct(old_message, P.cliqueList(i));
+        message.val = message.val / sum(message.val);
+        MESSAGES(i, j) = message;
+        old_message = message;
+        old_i = i;
     end
-    message = FactorProduct(old_message, P.cliqueList(i));
-    old_message = message;
-    old_i = i;
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -55,7 +60,13 @@ end
 % Now the clique tree has been calibrated. 
 % Compute the final potentials for the cliques and place them in P.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+for i = 1:length(P.cliqueList)
+    temp = P.cliqueList(i);
+    for j = 1:size(P.edges, 1)
+        temp = FactorProduct(temp, MESSAGES(i, j));
+    end
+    P.cliqueList(i) = temp;
+end
 
 
 return

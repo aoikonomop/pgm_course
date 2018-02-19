@@ -16,12 +16,34 @@ function M = ComputeExactMarginalsBP(F, E, isMax)
 
 % initialization
 % you should set it to the correct value in your code
-M = [];
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % YOUR CODE HERE
 %
 % Implement Exact and MAP Inference.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+P = CreateCliqueTree(F, E);
+P = CliqueTreeCalibrate(P, isMax);
+
+all_variables = [];
+for i = 1:length(F)
+    all_variables = [all_variables F(i).var];
+end
+all_variables = unique(all_variables);
+
+for i = 1:length(all_variables)
+    for j = 1:length(P.cliqueList)
+        if ismember(i, P.cliqueList(j).var)
+            marg_variables = setdiff(P.cliqueList(j).var, i);
+            if isMax == 0
+                M(i) = FactorMarginalization(P.cliqueList(j), marg_variables);
+                M(i).val = M(i).val / sum(M(i).val);
+            else
+                M(i) = FactorMaxMarginalization(P.cliqueList(j), marg_variables);
+            break;
+        end
+    end
+end
 
 end

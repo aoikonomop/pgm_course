@@ -36,24 +36,57 @@ MESSAGES = repmat(struct('var', [], 'card', [], 'val', []), N, N);
 % Remember that you only need an upward pass and a downward pass.
 %
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-i = 1;
-init_message = struct('var', [], 'card', [], 'val', []);
-old_i = 0;
-temp = [];
-while i ~= 0
-    [i, j] = GetNextCliques(P, MESSAGES);
-    if i ~= 0
-        if i ~= old_i
-            old_message = init_message;
-        end
-        message = FactorProduct(old_message, P.cliqueList(i));
-        message.val = message.val / sum(message.val);
-        MESSAGES(i, j) = message;
-        old_message = message;
-        old_i = i;
+[i, j] = GetNextCliques(P, MESSAGES);
+if i == 0
+    disp('Tree already calibrated');
+    return
+end
+
+if isMax == 1
+    for k = 1:length(P.cliqueList)
+        P.cliqueList(k).val = log(P.cliqueList(k).val);
     end
 end
 
+message_list = [i j];
+switched = 0;
+    
+while i ~= 0
+    idx = find(message_list(:, 2) == i);
+    
+    message = P.cliqueList(i);
+    
+    if isMax == 0
+        message.val = message.val / sum(message.val);
+    end
+
+    for k = 1:length(idx)
+        if message_list(idx(k), 1) == j && message_list(idx(k), 2) == i
+            continue
+        end
+        if isMax == 0
+            message = FactorProduct(message, MESSAGES(message_list(idx(k), 1),...
+                message_list(idx(k), 2)));
+        else
+            message = FactorSum(message, MESSAGES(message_list(idx(k), 1),...
+                message_list(idx(k), 2)));
+        end
+    end
+    marg_variables = setdiff(P.cliqueList(i).var, P.cliqueList(j).var);
+    
+    if isMax == 0
+        message = FactorMarginalization(message, marg_variables);
+        message.val = message.val / sum(message.val);
+    else
+        message = FactorMaxMarginalization(message, marg_variables);
+    end
+    
+    MESSAGES(i, j) = message;
+    
+    [i, j] = GetNextCliques(P, MESSAGES);
+    
+    message_list = [message_list ; i, j];
+end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % YOUR CODE HERE
 %
@@ -63,10 +96,15 @@ end
 for i = 1:length(P.cliqueList)
     temp = P.cliqueList(i);
     for j = 1:size(P.edges, 1)
-        temp = FactorProduct(temp, MESSAGES(i, j));
+        message = MESSAGES(j, i);
+        
+        if isMax == 0
+            temp = FactorProduct(temp, message);
+        else
+            temp = FactorSum(temp, message);
+        end
     end
     P.cliqueList(i) = temp;
 end
-
 
 return

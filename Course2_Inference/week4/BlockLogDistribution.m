@@ -53,6 +53,23 @@ LogBS = zeros(1, d);
 %
 % Also you should have only ONE for-loop, as for-loops are VERY slow in matlab
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+factors = G.var2factors(V(1));
+factor_list = F(factors{1});
+
+for i = 1:length(factor_list)
+    curr_factor = factor_list(i);
+    
+    [~, idx] = ismember(V(1), curr_factor.var);
+    
+    assignments = repmat(A(curr_factor.var), d, 1);
+    assignment_seq = 1:d;
+    assignments(:, idx) = repmat(assignment_seq(:), 1, length(idx));
+    
+    values = GetValueOfAssignment(curr_factor, assignments);
+    
+    LogBS = LogBS + log(values);
+    
+end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

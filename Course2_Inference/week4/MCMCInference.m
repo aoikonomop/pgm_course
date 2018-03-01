@@ -125,7 +125,8 @@ for i = 1:max_iter
     % even if you have not coded anything.
     % Please delete this line.
 
-    all_samples(i+1, :) = A0; 
+    newA = Trans(all_samples(i, :), G, F);
+    all_samples(i + 1, :) = newA;
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 end
 

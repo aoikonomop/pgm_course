@@ -24,4 +24,8 @@ for i = 1:length(G.names)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    probs = BlockLogDistribution(i, G, F, A);
+    probs = exp(probs);
+    new_assignment = randsample(length(probs), 1, true, probs);
+    A(i) = new_assignment;
 end

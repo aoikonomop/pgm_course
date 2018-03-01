@@ -19,7 +19,9 @@ p_acceptance = 0.0;
 % YOUR CODE HERE
 % Compute acceptance probability
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+denom = LogProbOfJointAssignment(F, A);
+nom = LogProbOfJointAssignment(F, A_prop);
+p_acceptance = exp(nom) / exp(denom);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Accept or reject proposal

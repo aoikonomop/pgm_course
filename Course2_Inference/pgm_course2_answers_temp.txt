@@ -1,0 +1,95 @@
+Final exam - course 2
+
+1.  It is possible in both T and G
+
+x2	It is not possible in T or G.
+	
+x1	It is possible in T but not in G.
+
+	It is possible in G but not in T.
+	
+2. 	A fully connected graph with instantiations of the Difficulty and Intelligence variables.
+
+	Impossible to tell without more information on the exact grades observed.
+	
+o	A fully connected bipartite graph where instantiations of the Difficulty variables are on one side and instantiations of the Intelligence variables are on the other side.
+
+	A graph over instantiations of the Difficulty variables and instantiations of the Intelligence variables, not necessarily bipartite; there could be edges between different Difficulty variables, and there could also be edges between different Intelligence variables.
+
+	A bipartite graph where instantiations of the Difficulty variables are on one side and instantiations of the Intelligence variables are on the other side. In general, this graph will not be fully connected.
+	
+3.o  min(m,n)
+
+	max(m,n)
+
+	mn+1
+
+	mn
+
+	min(m,n)+1
+
+	max(m,n)+1
+
+	m+n+1
+
+	m+n
+	
+4.x1  P(X|E=e) in a Bayesian network
+
+x1 x2	P(X) in a Bayesian network
+
+	P(X) in a Markov network
+
+	The partition function for a Markov network
+
+x2	The most likely assignment to the variables in a Markov network.
+	
+5.x2 	O(nk)
+
+	O(kn2)
+
+x1	O(kn)
+
+	O(nk3)
+	
+6. 	This renormalization will give rise to incorrect marginals at calibration.
+
+o	We will be unable to extract the partition function, but the variable marginals that are obtained from renormalizing the beliefs at each clique will still be correct.
+
+	Calibration will not even be achieved using this scheme.
+
+x1	This does not change the results of the algorithm: when the clique tree is calibrated, we can obtain from it both the partition function and the correct marginals.
+
+7.o If the algorithm converges, the final clique beliefs in T, when renormalized to sum to 1, are true marginals of P.
+
+	Belief propagation always converges on G.
+
+o	Assuming the algorithm converges, if a variable X appears in two cliques in T, the marginals P(X) computed from the the two clique beliefs must agree.
+
+o	Belief propagation always converges on T.
+
+8.  P(x'i,x-i)/P(xi,x-i)
+
+	P(xi,x-i)/P(x'i,x-i)
+
+x2	P(xi|x-i)/P(x'i|x-i)
+
+	1
+
+x1	P(x'i|x-i)/P(xi|x-i)
+
+9. 	When P(D|L) is different from P(D).
+
+	When there is some disease d such that argmaxtV(d,t)?argmaxt?dP(d)V(d,t)
+
+	When there is some treatment t such that V(D,t) is different for different diseases D.
+
+o	When there is some lab value l such that argmaxt?dP(d|l)V(d,t)?argmaxt?dP(d)V(d,t)
+
+10. We can reconstruct the original distribution by taking the product of cluster beliefs and normalizing it.
+
+	We can reconstruct the (unnormalized) original distribution by taking the ratio of the product of cluster beliefs to sepset beliefs, and the sepset beliefs can be obtained by marginalizing the cluster beliefs.
+
+x2	We can't reconstruct the (unnormalized) original distribution because we don't have the sepset beliefs to compute the ratio of the product of cluster beliefs to sepset beliefs.
+
+x1 x2	We can't reconstruct the original distribution because we were preforming loopy belief propagation, and the reparameterization property doesn't hold when it's loopy.
